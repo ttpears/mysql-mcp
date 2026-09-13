@@ -1,6 +1,6 @@
 {
   "name": "@ttpears/mysql-mcp",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Expert MySQL MCP Server with intelligent analytics and user behavior analysis capabilities",
   "main": "dist/index.js",
   "module": "./src/index.ts",
@@ -17,6 +17,7 @@
     "build": "tsc",
     "start": "node dist/index.js", 
     "dev": "tsx src/index.ts",
+    "test": "tsx --test tests/*.test.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
