@@ -468,6 +468,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/ttpears/mcp-mysql/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/ttpears/mcp-mysql/discussions)
-- 📚 **Documentation**: [Full Documentation](https://github.com/ttpears/mcp-mysql#readme)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/ttpears/mysql-mcp/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/ttpears/mysql-mcp/discussions)
+- 📚 **Documentation**: [Full Documentation](https://github.com/ttpears/mysql-mcp#readme)
+- 🔎 **Security field notes**: [Why read-only query validation is not the complete boundary](https://hackyourworld.com/mysql-mcp-read-only-security-boundaries/)
