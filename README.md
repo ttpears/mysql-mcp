@@ -103,7 +103,7 @@ For additional business system data sources, use pattern: `MYSQL_HOST_<SOURCE>_*
 | `MCP_MYSQL_CACHE_ENABLED` | `true` | Enable/disable intelligent caching system |
 | `MCP_MYSQL_CACHE_DIR` | `~/.mcp-mysql-cache` | Custom cache directory path |
 | `MCP_MYSQL_CACHE_MAX_SIZE` | `52428800` | Maximum cache file size in bytes (50MB) |
-| `MCP_MYSQL_CACHE_RETENTION_DAYS` | `30` | Days to retain cached files |
+| `MCP_MYSQL_CACHE_RETENTION_DAYS` | `30` | Delete JSON cache files older than this at startup |
 
 ### Configuration Examples
 
@@ -372,6 +372,8 @@ The server includes a comprehensive caching system that dramatically improves pe
 
 ### Cache Features
 - **Automatic TTL management**: Expired cache automatically detected and refreshed
+- **Enforced retention**: JSON cache files older than `MCP_MYSQL_CACHE_RETENTION_DAYS` are deleted at startup
+- **Private cache files**: Cache directories use mode `0700` and result files use mode `0600` on POSIX systems
 - **Intelligent key generation**: Complex queries cached with hash-based keys
 - **Size limits**: Configurable maximum file size (default: 50MB)
 - **Storage organization**: Organized by date and operation type

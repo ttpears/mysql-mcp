@@ -12,6 +12,7 @@ import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import { ensurePrivateDirectory, pruneExpiredCacheFiles, writePrivateFile } from './cache-retention.js';
 
 // Configuration schema for Smithery
 export const configSchema = z.object({
@@ -116,6 +117,17 @@ class MySQLMCPServer {
       maxFileSize: parseInt(process.env.MCP_MYSQL_CACHE_MAX_SIZE || '52428800'), // 50MB default
       retentionDays: parseInt(process.env.MCP_MYSQL_CACHE_RETENTION_DAYS || '30')
     };
+
+    if (this.cacheConfig.enabled) {
+      void ensurePrivateDirectory(this.cacheConfig.baseDir)
+        .then(() => pruneExpiredCacheFiles(this.cacheConfig.baseDir, this.cacheConfig.retentionDays))
+        .then(({ scannedFiles, removedFiles }) => {
+          console.error(`Cache retention checked ${scannedFiles} file(s); removed ${removedFiles} expired file(s).`);
+        })
+        .catch(error => {
+          console.error('Cache retention cleanup failed:', error);
+        });
+    }
 
     this.setupHandlers();
   }
@@ -599,17 +611,20 @@ class MySQLMCPServer {
     }
 
     let targetDir = this.cacheConfig.baseDir;
+    await ensurePrivateDirectory(targetDir);
     
     // Add host-specific subdirectory if not default host
     if (hostName && hostName !== this.defaultHostName) {
       targetDir = path.join(targetDir, `host-${hostName}`);
+      await ensurePrivateDirectory(targetDir);
     }
     
     if (subDir) {
-      targetDir = path.join(targetDir, subDir);
+      for (const segment of subDir.split(/[\\/]/).filter(Boolean)) {
+        targetDir = path.join(targetDir, segment);
+        await ensurePrivateDirectory(targetDir);
+      }
     }
-    
-    await fs.promises.mkdir(targetDir, { recursive: true });
     return targetDir;
   }
 
@@ -746,7 +761,7 @@ class MySQLMCPServer {
         return null;
       }
 
-      await fs.promises.writeFile(filePath, content, 'utf8');
+      await writePrivateFile(filePath, content);
       console.error(`Cached ${operation} results to: ${filePath}`);
       
       return filePath;
